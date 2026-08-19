@@ -1,0 +1,259 @@
+# U-Boot Documentation — D-Link DGS-1210-48 D1
+# Collected via UART (115200 then 230400 baud, 3.3V, ttyUSB0)
+# U-Boot version: 1.1.4 (Jan 29 2013 - 20:49:57)
+# Prompt: music>
+
+================================================================================
+== VERSION
+================================================================================
+
+U-Boot 1.1.4 (Jan 29 2013 - 20:49:57)
+
+================================================================================
+== BDINFO
+================================================================================
+
+boot_params = 0x87E977B0
+memstart    = 0x80000000
+memsize     = 0x08000000
+flashstart  = 0xB9000000
+flashsize   = 0x01000000
+flashoffset = 0x0003706C
+ethaddr     = 00:01:02:03:04:07
+ip_addr     = 192.168.1.10
+baudrate    = 115200 bps
+
+Notes:
+  - flashstart 0xB9000000 = NOR flash base address (memory-mapped)
+  - flashsize  0x01000000 = 16MB confirmed
+  - memstart   0x80000000 = RAM base (standard MIPS)
+  - memsize    0x08000000 = 128MB RAM confirmed
+
+================================================================================
+== PRINTENV
+================================================================================
+
+bootargs=console=ttyS0,115200 root=31:03 rootfstype=jffs2 init=/sbin/init mtdparts=music-nor0:256k(u-boot),256k(u-boot-env),2048k(uImage),-(roofs) mem=128M
+bootcmd=bootm 0xb9080000
+bootdelay=4
+baudrate=115200
+ipaddr=192.168.1.10
+serverip=192.168.1.27
+bootfile="/flash/music.img"
+asdk_ver=0.9.7.253
+oem_vendor=QCA
+oem_product=b2b_test
+oem_board_version=2
+oem_board_serial=7
+oem_board_mac=0x00:0x01:0x02:0x03:0x04:0x07
+oem_capwap_len=0x0
+oem_capwap_base=0x0
+up_uboot=ping ${serverip}; dltftp u-boot.bin
+up_linux31=ping ${serverip}; dltftp knl_img
+up_fs31=ping ${serverip}; dltftp basic_fs
+up_fs31=ping ${serverip}; dltftp app_fs_img
+stdin=serial
+stdout=serial
+stderr=serial
+ethact=eth0
+
+Environment size: 713/2044 bytes
+
+Notes:
+  - oem_vendor=QCA confirms Qualcomm Atheros BSP
+  - asdk_ver=0.9.7.253 = Atheros SDK version
+  - bootcmd boots kernel from 0xb9080000 (flash offset 0x80000)
+  - mtdparts note: partition name "roofs" is a typo in the BSP source
+  - up_* variables are D-Link factory update commands via TFTP
+
+================================================================================
+== IMLS
+================================================================================
+
+Image at B9080000:
+  Image Name:   Linux Kernel Image
+  Created:      2016-01-22   6:11:35 UTC
+  Image Type:   MIPS Linux Kernel Image (gzip compressed)
+  Data Size:    1186801 Bytes = 1.1 MB
+  Load Address: 80002000
+  Entry Point:  80006210
+  Verifying Checksum ... OK
+
+Notes:
+  - Kernel compiled 2016-01-22 despite U-Boot being from 2013
+  - Load address 0x80002000 = RAM load target
+  - Entry point  0x80006210 = kernel entry after decompression
+  - Offset in flash: 0xB9080000 - 0xB9000000 = 0x80000 (512KB from start)
+
+================================================================================
+== FLINFO
+================================================================================
+
+Bank # 1: flash_print_info??
+
+Notes:
+  - flinfo is broken in this U-Boot build (flash_print_info unresolved)
+  - Flash layout was recovered from kernel boot output instead:
+
+    0x000000000000-0x000000040000 : "u-boot"       (256 KB)
+    0x000000040000-0x000000080000 : "u-boot-env"   (256 KB)
+    0x000000080000-0x000000280000 : "uImage"       (2 MB)
+    0x000000280000-0x000001000000 : "roofs"        (13.5 MB)
+
+================================================================================
+== AVAILABLE COMMANDS (help output)
+================================================================================
+
+autoscr - run script from memory
+?       - alias for 'help'
+base    - print or set address offset
+bdinfo  - print Board Info structure
+boot    - boot default, i.e., run 'bootcmd'
+bootd   - boot default, i.e., run 'bootcmd'
+bootelf - Boot from an ELF image in memory
+bootm   - boot application image from memory
+bootp   - boot image via network using BootP/TFTP protocol
+bootvx  - Boot vxWorks from an ELF image
+chpart  - change active partition
+cmp     - memory compare
+coninfo - print console devices and information
+cp      - memory copy
+crc32   - checksum calculation
+dhcp    - invoke DHCP client to obtain IP/boot params
+dltftp  - load image using TFTP protocol and copy to flash
+echo    - echo args to console
+erase   - erase FLASH memory
+eth     - switch init  →  usage: eth [init]
+exit    - exit script
+flinfo  - print FLASH memory information  (BROKEN on this build)
+fsinfo  - print information about filesystems
+fsload  - load binary file from a filesystem image
+go      - start application at address 'addr'
+help    - print online help
+icrc32  - checksum calculation
+iloop   - infinite loop on address range
+imd     - i2c memory display
+iminfo  - print header information for application image
+imls    - list all images found in flash
+imm     - i2c memory modify (auto-incrementing)
+imw     - memory write (fill per byte)
+inm     - memory modify (constant address)
+iprobe  - probe to discover valid I2C chip addresses
+itest   - return true/false on integer compare
+loadb   - load binary file over serial line (kermit mode)
+loads   - load S-Record file over serial line
+loady   - load binary file over serial line (ymodem mode)
+loop    - infinite loop on address range
+ls      - list files in a directory (default /)
+md      - memory display
+mii     - MII utility commands
+mm      - memory modify (auto-incrementing)
+mmd     - mdio memory display (access mdio slave)
+mmw     - mdio memory write (access mdio slave)
+mtdparts- define flash/nand partitions
+mtest   - simple RAM test
+mw      - memory write (fill)
+nfs     - boot image via network using NFS protocol
+nm      - memory modify (constant address)
+ping    - send ICMP ECHO_REQUEST to network host
+port    - port enable/disable  →  usage: port [enable|disable]
+printenv- print environment variables
+protect - enable or disable FLASH write protection
+rarpboot- boot image via network using RARP/TFTP protocol
+reset   - Perform RESET of the CPU
+run     - run commands in an environment variable
+setenv  - set environment variables
+sleep   - delay execution for some time
+sloady  - load image using ymodem and copy to flash
+test    - minimal test like /bin/sh
+tftpboot- boot image via network using TFTP protocol
+version - print monitor version
+
+================================================================================
+== COMMAND NOTES & LIMITATIONS
+================================================================================
+
+MISSING (not available):
+  - sf      → No SPI flash direct access. Flash is memory-mapped only.
+              Use md.b 0xB9000000 for raw flash read.
+  - tftpput → No TFTP upload to server. Flash dump must be done via
+              md.b + UART capture.
+  - gpio    → No GPIO command. GPIO only accessible via register writes (mw).
+
+WORKING FOR FLASH DUMP:
+  md.b 0xB9000000 0x1000000
+  → Dumps entire 16MB flash as hex over UART.
+  → At 230400 baud: ~35 minutes capture time.
+  → Reconstruct binary with tools/uboot_mdb_to_bin.py
+
+WORKING FOR TFTP (download only):
+  setenv ipaddr 192.168.1.10
+  setenv serverip 192.168.1.27
+  ping 192.168.1.27
+  tftpboot 0x80000000 filename.bin
+  → Useful for loading test kernels into RAM without flashing.
+
+NETWORK SETUP:
+  port enable          → enables ethernet port
+  eth init             → reinitializes ethernet driver
+  ping 192.168.1.27    → test connectivity
+
+I2C (partially functional):
+  iprobe               → scans I2C bus — returns all FAIL because
+                         PCA9545 mux is not initialized at U-Boot stage.
+                         Downstream devices (PCA9555, CPLD, EEPROM, RTC)
+                         are not accessible from U-Boot.
+  imd <addr> <reg> <len> → read I2C device registers
+
+MII / MDIO:
+  mii device           → list MII devices
+  mii info             → show PHY info
+  mmd <addr> <reg>     → read MDIO register
+  mmw <addr> <reg> <val> → write MDIO register
+
+  Result of 'mii info':
+    MII devices: 'eth0'
+    Current device: 'eth0'
+    PHY 0x00 to 0x1F: OUI=0x1374, Model=0x08, Rev=0x02, 10baseT HDX
+    → OUI 0x004d = Qualcomm Atheros
+    → 32 identical PHY entries = switch fabric internal PHYs
+
+DANGEROUS (do not use without full flash backup):
+  erase    → erases flash sectors
+  cp       → copies memory to flash
+  dltftp   → D-Link TFTP flash writer
+
+================================================================================
+== FLASH DUMP PROCEDURE
+================================================================================
+
+Prerequisites:
+  - minicom configured at 230400 baud, 8N1
+  - Log file active (Ctrl-A L in minicom)
+  - Line wrap disabled (Ctrl-A W in minicom)
+  - TFTP server running on 192.168.1.27 (for network test only)
+  - Switch connected via ethernet to PC
+
+Step 1 — Change baudrate (optional, saves ~35 min vs 115200):
+  setenv baudrate 230400
+  → Immediately switch minicom to 230400 baud (Ctrl-A P)
+
+Step 2 — Activate minicom log:
+  Ctrl-A L → enter filename: flash_dump.txt
+
+Step 3 — Launch dump:
+  md.b 0xB9000000 0x1000000
+  → Wait ~35 min at 230400 baud, ~70 min at 115200 baud
+  → Ctrl-C does NOT interrupt md.b on U-Boot 1.1.4
+
+Step 4 — Reconstruct binary on PC:
+  python3 tools/uboot_mdb_to_bin.py flash_dump.txt flash_dump.bin \
+    --start-addr b9000000 --skip-errors --verbose
+
+Expected output:
+  [OK] Taille exacte 16MB — dump complet ✓
+  [INFO] Premiers octets : 10 00 00 ff ... — semble non-vide ✓
+
+================================================================================
+== END OF DOCUMENT
+================================================================================

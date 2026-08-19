@@ -1,0 +1,55 @@
+## Component Reference List
+
+### Physically confirmed (chip marking read directly)
+
+| Component | Reference | Bus/Interface |
+|-----------|-----------|----------------|
+| Flash | Macronix MX25L12835FMI-10G — SPI NOR, 128 Mbit / 16 MB | SPI |
+| RAM | Nanya NT5CB128M8FN-DH — DDR3-1600, 1 Gbit / 128 MB | DDR3 |
+| I2C mux | NXP PCA9545A (4-channel) | I2C |
+| GPIO expander ×2 | NXP PCA9555 (16-bit) | I2C (behind PCA9545A mux) |
+| EEPROM | Atmel/Microchip AT24C series (marking "ATMLH548") | I2C (behind mux) |
+| Temperature sensor | Microchip TCN75AVOA | I2C (behind mux) |
+| Monostable ×4 | 74HC123D (dual retriggerable monostable multivibrator) | Logic, not bus-addressed |
+| Logic gate | 74HC08D (quad 2-input AND gate) | Logic, not bus-addressed |
+| PWM buck controller | Richtek RT8120B | Power, not bus-addressed |
+| DC-DC converter | ITE IT76820M | Power, not bus-addressed |
+| PNP power transistor | UTC 2SB772L | Power, not bus-addressed |
+| N-channel power MOSFET | Niko-Sem/UBIQ QM3004D (marked "M3004D") | Power, not bus-addressed |
+| Switch fabric slaves ×6 | QCA8059-AL1C | MDIO (cascaded from master) |
+
+### Confirmed via live register read / booted kernel
+
+| Component | Reference | Method |
+|-----------|-----------|--------|
+| CPU  | MIPS 24Kc V8.5, codename "Music" | Confirmed live via `/proc/cpuinfo` on custom-booted kernel |
+| Switch fabric master revision | B0, codename "Vivo" | Live read of `REG_SWITCH_GLB_CTRL_0` (`0x18800000`) = `0x02022002`, masked `& 0xff` = `0x02` = `MUSIC_VIVO_REV_ID_B0` |
+
+### Confirmed via GPL source code (not physical marking)
+
+| Component | Reference |
+|-----------|-----------|
+| Board ODM | Alpha Networks Incorporation (copyright header in `ver_uboot.h`) |
+
+### Present and active, exact model unidentified (no marking read yet)
+
+| Component | Evidence of presence |
+|-----------|----------------------|
+| CPLD | `DRV_CPLD_*` symbols in `dgs_drv.ko`, likely also drives LED banks and fan control |
+| RTC | `DRV_RTC_Init` symbol in `dgs_drv.ko`, I2C (behind mux) |
+
+### Strong candidate, not yet physically confirmed
+
+| Component | Reference | Evidence |
+|-----------|-----------|----------|
+| Switch fabric master | Likely QCA8519-AC2C, codename "Vivo" | Cross-referenced against MikroTik CRS226/CRS210 product pages listing this exact part with an on-board CPU; heatsink not yet removed (epoxy-glued) |
+
+### LED indicators
+
+Physical panel-facing indicators — not individually addressed chips, driven via CPLD/GPIO expanders.
+
+| LED group | Count | Color |
+|-----------|-------|-------|
+| System status | 1 | Green |
+| Port activity (RJ45, per-port) | 48 | Orange or green, depending on negotiated link speed |
+| SFP link/activity | 4 | Likely green |
