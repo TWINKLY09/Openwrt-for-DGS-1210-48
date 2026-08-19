@@ -1,0 +1,26 @@
+This folder contains a python script that converts the uart hex dump of uboot if you have no way to backup the firmware of your device.
+
+This script is universal and compatible with every uboot if every device that has a hex dump command.
+
+To use it you need to have these files : 
+- your hex log from minicom or other serial terminal.
+- python 3 installés
+- your time to dump via hex but the conversion last only a few seconds maybe minutes. 
+
+uboot_mdb_to_bin.py
+====================
+Reconstruit un fichier binaire depuis la sortie brute d'un `md.b` U-Boot
+capturée via UART (minicom, picocom, screen, etc.)
+
+Format attendu (U-Boot 1.1.x / 2013) :
+  b8000000: 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f    ................
+  b8000010: 10 11 12 13 ...
+
+Usage :
+  python3 uboot_mdb_to_bin.py capture.txt flash_dump.bin
+
+Options :
+  --start-addr  Adresse de début attendue (hex, ex: b8000000) — pour validation
+  --skip-errors Ignore les lignes mal formées au lieu de s'arrêter
+  --verbose     Affiche la progression toutes les 256KB
+"""
